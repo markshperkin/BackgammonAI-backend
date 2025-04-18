@@ -1,0 +1,49 @@
+# Byte‐compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# SQLite database files
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# Python packaging/build artifacts
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sw?
+.DS_Store
+Thumbs.db
+
+# C extensions
+*.so
+
+# Coverage reports
+.coverage
+htmlcov/
+*.cover
+.nyc_output/
+
+# Mypy/type‐checker cache
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pytest cache
+.pytest_cache/
