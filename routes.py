@@ -1,10 +1,14 @@
 # API endpoints
 import random
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, Response, Flask
 from game import Backgammon
 import json
+import heapq
 from random_ai import Rplay_ai_move
-from minimax import minimax_move
+app = Flask(__name__)
+
+from minimax import minimax_move, event_queue
+
 
 # create a blueprint instead of directly using `app`
 game_routes = Blueprint("game_routes", __name__)
@@ -76,3 +80,50 @@ def ai_move():
     print("current board state:", game.get_board_state())
 
     return jsonify(new_state)
+
+_depth_map = {}    # node_id → depth
+_top_heaps = {}    # depth → min‑heap of (score, node_id)
+
+# function to decide if to emite data to the front end.
+# uses heaps for each level or depth to find the best node with the best score to send.
+# cap is 10 nodes per level.
+def _should_emit(event):
+    # determine this node's depth from its parent
+    parent = event.get('parent')
+    parent_depth = _depth_map.get(parent, -1)
+    depth = parent_depth + 1
+    _depth_map[event['id']] = depth
+
+    heap = _top_heaps.setdefault(depth, [])
+    if len(heap) < 10:
+        heapq.heappush(heap, (event['score'], event['id']))
+        return True
+
+    # if this event beats the smallest top‑10 score at this depth
+    if event['score'] > heap[0][0]:
+        heapq.heapreplace(heap, (event['score'], event['id']))
+        return True
+
+    return False
+
+# send a stream of data (search graph) to the front end
+@game_routes.route('/stream')
+def stream_events():
+    """
+    Server‑Sent Events endpoint that streams instrumentation events
+    from the minimax event_queue to the frontend in real time.
+    """
+    def event_generator():
+        while True:
+            event = event_queue.get()   # blocks until an event is available
+            # print(f"[SSE ▶] Sending event: {event}")   # ← debug print
+            # SSE requires 'data: ' prefix and a blank line after each event
+            yield f"data: {json.dumps(event)}\n\n"
+
+    # Disable HTTP caching so proxies don’t buffer
+    headers = {
+      'Cache-Control': 'no-cache',
+      'X-Accel-Buffering': 'no'   # if you’re behind nginx
+    }
+    return Response(event_generator(), headers=headers,
+                    mimetype='text/event-stream')

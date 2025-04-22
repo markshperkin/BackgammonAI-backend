@@ -126,11 +126,11 @@ def simulate_full_turn(state: Backgammon, roll: tuple[int,int], moves: list[tupl
     simulate one full turn: flips player, sets dice, then applies each move
     """
     g = copy.deepcopy(state)
-    # Apply the roll in place on the copy
+    # apply the roll in place on the copy
     rec_roll = apply_roll_inplace(g, roll)
     for start, end in moves:
         rec_move = apply_pip_move_inplace(g, start, end)
-        # no undo here—this is on the copy
+        # no undo here, this is on the copy
     return g
 
 

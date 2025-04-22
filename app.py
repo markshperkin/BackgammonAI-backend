@@ -11,6 +11,11 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 from routes import game_routes
 app.register_blueprint(game_routes)
 
+
+print("▶ Registered routes:")
+for rule in app.url_map.iter_rules():
+    print(f"   {rule}")
+
 @app.route('/')
 def home():
     return {"message": "Backgammon API is running!"}

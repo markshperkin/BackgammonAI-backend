@@ -37,12 +37,9 @@ class Backgammon:
         # board[19] = 3
         # board[20] = 3
         # board[21] = 3
-        # board[22] = 2
-        # board[17] = 1
+
  
-        # board[0] = -3
-        # board[1] = -3
-        # board[2] = -3
+
         # board[3] = -3
         # board[4] = -2
         # board[6] = -1
