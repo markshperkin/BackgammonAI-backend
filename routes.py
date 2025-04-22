@@ -11,12 +11,7 @@ from minimax import minimax_move, event_queue
 game_routes = Blueprint("game_routes", __name__)
 game = Backgammon()
 
-# health check
-@app.route("/")
-def health_check():
-    return "OK", 200
 
-app.register_blueprint(game_routes)
 
 # start a new game
 @game_routes.route('/api/game/start', methods=['POST'])
