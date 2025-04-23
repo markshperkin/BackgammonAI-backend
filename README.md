@@ -8,7 +8,7 @@ Welcome to the Backgammon AI back-end repository! This repository features the b
    git clone https://github.com/markshperkin/BackgammonAI-backend.git
    cd BackgammonAI-backend
 ```
-## install requirements (recommended, create a env using conda or other tools):
+## install requirements (recommended, create an env using conda):
 ```sh
 pip install -r requirements.txt
 ```
