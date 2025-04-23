@@ -6,10 +6,8 @@ from routes import game_routes
 
 # init flask app
 app = Flask(__name__)
-CORS(app, resources={
-    r"/api/*": {"origins": ["https://backgammonai-frontend.onrender.com"]},
-    r"/stream": {"origins": ["https://backgammonai-frontend.onrender.com"]}
-})
+CORS(app)  
+
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 app.register_blueprint(game_routes)

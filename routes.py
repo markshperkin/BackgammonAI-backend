@@ -4,10 +4,7 @@ from flask_cors import cross_origin
 from game import Backgammon
 import json
 from random_ai import Rplay_ai_move
-app = Flask(__name__)
-
 from minimax import minimax_move, event_queue
-
 
 game_routes = Blueprint("game_routes", __name__)
 game = Backgammon()
@@ -85,7 +82,6 @@ def ai_move():
 # send a stream of data (search graph) to the front end
 
 @game_routes.route('/stream')
-@cross_origin(origin='https://backgammonai-frontend.onrender.com')
 def stream_events():
     """
     Server‑Sent Events endpoint that streams instrumentation events
@@ -95,7 +91,8 @@ def stream_events():
         while True:
             event = event_queue.get()
             # print(f"[SSE ▶] Sending event: {event}")
-            yield f"data: {json.dumps(event)}\n\n"
+            if event is not None:
+                yield f"data: {json.dumps(event)}\n\n"
 
     headers = {
       'Cache-Control': 'no-cache',
