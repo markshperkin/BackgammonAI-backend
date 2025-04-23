@@ -1,5 +1,6 @@
 import random
 from flask import Blueprint, request, jsonify, Response, Flask
+from flask_cors import cross_origin
 from game import Backgammon
 import json
 from random_ai import Rplay_ai_move
@@ -82,7 +83,9 @@ def ai_move():
 
 
 # send a stream of data (search graph) to the front end
+
 @game_routes.route('/stream')
+@cross_origin(origin='https://backgammonai-frontend.onrender.com')
 def stream_events():
     """
     Server‑Sent Events endpoint that streams instrumentation events
