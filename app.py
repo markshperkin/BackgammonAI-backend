@@ -8,7 +8,7 @@ from routes import game_routes
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["https://backgammonai-frontend.onrender.com"]}})
 
-# socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="https://backgammonai-frontend.onrender.com")
 
 app.register_blueprint(game_routes)
 
@@ -23,5 +23,5 @@ def home():
 
 # Run the server
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True)
+    socketio.run(app, debug=True)
 

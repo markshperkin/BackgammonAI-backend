@@ -86,6 +86,8 @@ def stream_events():
     from the minimax event_queue to the frontend in real time.
     """
     def event_generator():
+        yield ": OK\n\n"
+        
         while True:
             event = event_queue.get()
             # print(f"[SSE ▶] Sending event: {event}")
