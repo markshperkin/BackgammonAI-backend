@@ -93,6 +93,7 @@ def stream_events():
                 yield f"data: {json.dumps(event)}\n\n"
 
     headers = {
+      'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       'X-Accel-Buffering': 'no',
       'Access-Control-Allow-Origin': 'https://backgammonai-frontend.onrender.com',
