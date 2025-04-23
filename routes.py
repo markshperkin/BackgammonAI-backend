@@ -79,7 +79,6 @@ def ai_move():
 # send a stream of data (search graph) to the front end
 
 @game_routes.route('/stream')
-@cross_origin(origins="https://backgammonai-frontend.onrender.com")
 def stream_events():
     """
     Server‑Sent Events endpoint that streams instrumentation events
@@ -87,7 +86,7 @@ def stream_events():
     """
     def event_generator():
         yield ": OK\n\n"
-        
+
         while True:
             event = event_queue.get()
             # print(f"[SSE ▶] Sending event: {event}")
