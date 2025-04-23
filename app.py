@@ -6,7 +6,7 @@ from routes import game_routes
 
 # init flask app
 app = Flask(__name__)
-CORS(app)  
+CORS(app, resources={r"/*": {"origins": ["https://backgammonai-frontend.onrender.com"]}})
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 
