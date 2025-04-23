@@ -5,6 +5,7 @@ from game import Backgammon
 import json
 from random_ai import Rplay_ai_move
 from minimax import minimax_move, event_queue
+# app = Flask(__name__)
 
 game_routes = Blueprint("game_routes", __name__)
 game = Backgammon()
@@ -85,18 +86,17 @@ def stream_events():
     from the minimax event_queue to the frontend in real time.
     """
     def event_generator():
-        yield ": OK\n\n"
 
         while True:
             event = event_queue.get()
             # print(f"[SSE ▶] Sending event: {event}")
-            if event is not None:
-                yield f"data: {json.dumps(event)}\n\n"
+            
+            yield f"data: {json.dumps(event)}\n\n"
 
     headers = {
     #   'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'X-Accel-Buffering': 'no',
+      'X-Accel-Buffering': 'no'
     #   'Access-Control-Allow-Origin': 'https://backgammonai-frontend.onrender.com',
 
     }
