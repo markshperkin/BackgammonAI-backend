@@ -79,6 +79,7 @@ def ai_move():
 # send a stream of data (search graph) to the front end
 
 @game_routes.route('/stream')
+@cross_origin(origins="https://backgammonai-frontend.onrender.com")
 def stream_events():
     """
     Server‑Sent Events endpoint that streams instrumentation events
@@ -93,7 +94,9 @@ def stream_events():
 
     headers = {
       'Cache-Control': 'no-cache',
-      'X-Accel-Buffering': 'no'
+      'X-Accel-Buffering': 'no',
+      'Access-Control-Allow-Origin': 'https://backgammonai-frontend.onrender.com',
+
     }
     return Response(event_generator(), headers=headers,
                     mimetype='text/event-stream')
