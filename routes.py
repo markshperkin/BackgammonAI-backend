@@ -11,6 +11,7 @@ from minimax import minimax_move, event_queue
 game_routes = Blueprint("game_routes", __name__)
 game = Backgammon()
 
+app = Flask(__name__)
 
 
 # start a new game
