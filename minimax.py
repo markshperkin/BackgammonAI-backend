@@ -16,6 +16,8 @@ event_queue = queue.Queue()
 childrenChance = defaultdict(list)
 childrenMIN1 = defaultdict(list)
 childrenMIN2 = defaultdict(list)
+send_limit = 0
+
 
 # function to emit the events to api
 def emit_event(node_id, parent_id, move, score, tree_depth, current_player, remaining, ischance):
@@ -27,132 +29,168 @@ def emit_event(node_id, parent_id, move, score, tree_depth, current_player, rema
         'current_player': current_player,
         'ischance': ischance
     }
+    global send_limit
+
     # print("emiting this data:", event)
 
     # collects and sorts the levels of the tree depends on the remaining moves. 
     # displays 3 chance nodes, 2 lowest score min and for each one more move of min. 
-    if remaining == 4:
-        if current_player == -1 and tree_depth < 4:
-            event_queue.put(event)
-        elif current_player == 1 and tree_depth < 7:
-            if score is not None:
-                if tree_depth == 4:
-                    childrenChance[parent_id].append(event)
-                elif tree_depth == 5 and parent_id in childrenChance:
-                    childrenMIN1[parent_id].append(event)
-                elif tree_depth == 6:
-                    childrenMIN2[parent_id].append(event)
-                if len(childrenChance[parent_id]) == 21:
-                    top5 = sorted(childrenChance[parent_id], key=lambda e: e['score'])[:3]
-                    for ev in top5:
-                        event_queue.put(ev)
-                        m1 = sorted(childrenMIN1.get(ev['id'], []), key=lambda e: e['score'])[:2]
-                        for ev1 in m1:
-                            event_queue.put(ev1)
-                            m2 = sorted(childrenMIN2.get(ev1['id'], []), key=lambda e: e['score'])[:1]
-                            for ev2 in m2:
-                                event_queue.put(ev2)
-                            childrenMIN2.pop(ev['id'], None)
-                        childrenMIN1.pop(ev['id'], None)
+    if send_limit < 200:
+        if remaining == 4:
+            if current_player == -1 and tree_depth < 4:
+                event_queue.put(event)
+                send_limit += 1
+            elif current_player == 1 and tree_depth < 7:
+                if score is not None:
+                    if tree_depth == 4:
+                        childrenChance[parent_id].append(event)
+                    elif tree_depth == 5 and parent_id in childrenChance:
+                        childrenMIN1[parent_id].append(event)
+                    elif tree_depth == 6:
+                        childrenMIN2[parent_id].append(event)
+                    if len(childrenChance[parent_id]) == 21:
+                        top5 = sorted(childrenChance[parent_id], key=lambda e: e['score'])[:3]
+                        for ev in top5:
+                            event_queue.put(ev)
+                            send_limit += 1
+                            m1 = sorted(childrenMIN1.get(ev['id'], []), key=lambda e: e['score'])[:2]
+                            for ev1 in m1:
+                                event_queue.put(ev1)
+                                send_limit += 1
+                                m2 = sorted(childrenMIN2.get(ev1['id'], []), key=lambda e: e['score'])[:1]
+                                for ev2 in m2:
+                                    event_queue.put(ev2)
+                                    send_limit += 1
+                                childrenMIN2.pop(ev['id'], None)
+                            childrenMIN1.pop(ev['id'], None)
 
-                    del childrenChance[parent_id]
+                        del childrenChance[parent_id]
 
-    elif remaining == 3:
-        if current_player == -1 and tree_depth < 3:
-            event_queue.put(event)
-        elif current_player == 1 and tree_depth < 6:
-            if score is not None:
-                if tree_depth == 3:
-                    childrenChance[parent_id].append(event)
-                elif tree_depth == 4 and parent_id in childrenChance:
-                    childrenMIN1[parent_id].append(event)
+        elif remaining == 3:
+            if current_player == -1 and tree_depth < 3:
+                event_queue.put(event)
+                send_limit += 1
+            elif current_player == 1 and tree_depth < 6:
+                if score is not None:
+                    if tree_depth == 3:
+                        childrenChance[parent_id].append(event)
+                    elif tree_depth == 4 and parent_id in childrenChance:
+                        childrenMIN1[parent_id].append(event)
 
-                elif tree_depth == 5:
-                    childrenMIN2[parent_id].append(event)
-                if len(childrenChance[parent_id]) == 21:
-                    top5 = sorted(childrenChance[parent_id], key=lambda e: e['score'])[:3]
-                    for ev in top5:
-                        event_queue.put(ev)
-                        m1 = sorted(childrenMIN1.get(ev['id'], []), key=lambda e: e['score'])[:2]
-                        for ev1 in m1:
-                            event_queue.put(ev1)
-                            m2 = sorted(childrenMIN2.get(ev1['id'], []), key=lambda e: e['score'])[:1]
-                            for ev2 in m2:
-                                event_queue.put(ev2)
-                            childrenMIN2.pop(ev['id'], None)
-                        childrenMIN1.pop(ev['id'], None)
+                    elif tree_depth == 5:
+                        childrenMIN2[parent_id].append(event)
+                    if len(childrenChance[parent_id]) == 21:
+                        top5 = sorted(childrenChance[parent_id], key=lambda e: e['score'])[:3]
+                        for ev in top5:
+                            event_queue.put(ev)
+                            send_limit += 1
+                            m1 = sorted(childrenMIN1.get(ev['id'], []), key=lambda e: e['score'])[:2]
+                            for ev1 in m1:
+                                event_queue.put(ev1)
+                                send_limit += 1
+                                m2 = sorted(childrenMIN2.get(ev1['id'], []), key=lambda e: e['score'])[:1]
+                                for ev2 in m2:
+                                    event_queue.put(ev2)
+                                    send_limit += 1
+                                childrenMIN2.pop(ev['id'], None)
+                            childrenMIN1.pop(ev['id'], None)
 
-                    del childrenChance[parent_id]
+                        del childrenChance[parent_id]
 
-    elif remaining == 2:
-        if current_player == -1 and tree_depth < 2:
-            event_queue.put(event)
-        elif current_player == 1 and tree_depth < 5:
-            if score is not None:
-                if tree_depth == 2:
-                    childrenChance[parent_id].append(event)
-                elif tree_depth == 3 and parent_id in childrenChance:
-                    childrenMIN1[parent_id].append(event)
+        elif remaining == 2:
+            if current_player == -1 and tree_depth < 2:
+                event_queue.put(event)
+                send_limit += 1
+            elif current_player == 1 and tree_depth < 5:
+                if score is not None:
+                    if tree_depth == 2:
+                        childrenChance[parent_id].append(event)
+                    elif tree_depth == 3 and parent_id in childrenChance:
+                        childrenMIN1[parent_id].append(event)
 
-                elif tree_depth == 4:
-                    childrenMIN2[parent_id].append(event)
-                if len(childrenChance[parent_id]) == 21:
-                    top5 = sorted(childrenChance[parent_id], key=lambda e: e['score'])[:3]
-                    for ev in top5:
-                        event_queue.put(ev)
-                        m1 = sorted(childrenMIN1.get(ev['id'], []), key=lambda e: e['score'])[:2]
-                        for ev1 in m1:
-                            event_queue.put(ev1)
-                            m2 = sorted(childrenMIN2.get(ev1['id'], []), key=lambda e: e['score'])[:1]
-                            for ev2 in m2:
-                                event_queue.put(ev2)
-                            childrenMIN2.pop(ev['id'], None)
-                        childrenMIN1.pop(ev['id'], None)
+                    elif tree_depth == 4:
+                        childrenMIN2[parent_id].append(event)
+                    if len(childrenChance[parent_id]) == 21:
+                        top5 = sorted(childrenChance[parent_id], key=lambda e: e['score'])[:3]
+                        for ev in top5:
+                            event_queue.put(ev)
+                            send_limit += 1
+                            m1 = sorted(childrenMIN1.get(ev['id'], []), key=lambda e: e['score'])[:2]
+                            for ev1 in m1:
+                                event_queue.put(ev1)
+                                send_limit += 1
+                                m2 = sorted(childrenMIN2.get(ev1['id'], []), key=lambda e: e['score'])[:1]
+                                for ev2 in m2:
+                                    event_queue.put(ev2)
+                                    send_limit += 1
+                                childrenMIN2.pop(ev['id'], None)
+                            childrenMIN1.pop(ev['id'], None)
 
-                    del childrenChance[parent_id]
+                        del childrenChance[parent_id]
 
-    elif remaining == 1:
-        if current_player == -1 and tree_depth < 1:
-            event_queue.put(event)
-        elif current_player == 1 and tree_depth < 4:
-            if score is not None:
-                if tree_depth == 1:
-                    childrenChance[parent_id].append(event)
-                elif tree_depth == 2 and parent_id in childrenChance:
-                    childrenMIN1[parent_id].append(event)
+        elif remaining == 1:
+            if current_player == -1 and tree_depth < 1:
+                event_queue.put(event)
+                send_limit += 1
+            elif current_player == 1 and tree_depth < 4:
+                if score is not None:
+                    if tree_depth == 1:
+                        childrenChance[parent_id].append(event)
+                    elif tree_depth == 2 and parent_id in childrenChance:
+                        childrenMIN1[parent_id].append(event)
 
-                elif tree_depth == 3:
-                    childrenMIN2[parent_id].append(event)
-                if len(childrenChance[parent_id]) == 21:
-                    top5 = sorted(childrenChance[parent_id], key=lambda e: e['score'])[:3]
-                    for ev in top5:
-                        event_queue.put(ev)
-                        m1 = sorted(childrenMIN1.get(ev['id'], []), key=lambda e: e['score'])[:2]
-                        for ev1 in m1:
-                            event_queue.put(ev1)
-                            m2 = sorted(childrenMIN2.get(ev1['id'], []), key=lambda e: e['score'])[:1]
-                            for ev2 in m2:
-                                event_queue.put(ev2)
-                            childrenMIN2.pop(ev['id'], None)
-                        childrenMIN1.pop(ev['id'], None)
-                    del childrenChance[parent_id]
+                    elif tree_depth == 3:
+                        childrenMIN2[parent_id].append(event)
+                    if len(childrenChance[parent_id]) == 21:
+                        top5 = sorted(childrenChance[parent_id], key=lambda e: e['score'])[:3]
+                        for ev in top5:
+                            event_queue.put(ev)
+                            send_limit += 1
+                            m1 = sorted(childrenMIN1.get(ev['id'], []), key=lambda e: e['score'])[:2]
+                            for ev1 in m1:
+                                event_queue.put(ev1)
+                                send_limit += 1
+                                m2 = sorted(childrenMIN2.get(ev1['id'], []), key=lambda e: e['score'])[:1]
+                                for ev2 in m2:
+                                    event_queue.put(ev2)
+                                    send_limit += 1
+                                childrenMIN2.pop(ev['id'], None)
+                            childrenMIN1.pop(ev['id'], None)
+                        del childrenChance[parent_id]
 
 def evaluate_board(game):
     white_dist = 0
     black_dist = 0
+    dice_balance = 0
+    BAR_PENALTY = 30
+    BARE_OFF_BOOST = 30
+
     for idx, count in enumerate(game.board):
         if count > 0:
             white_dist += idx * count
+            if count >= 2:
+                white_dist -= 3
         elif count < 0:
             black_dist += (23 - idx) * abs(count)
-    BAR_PENALTY = 30
+            if count <= 2:
+                black_dist -= 3
+                
+    for die in game.moves_remaining:
+        dice_balance += die
+
+    black_dist += dice_balance
+    white_dist += dice_balance
+
     white_dist += game.bar_white * BAR_PENALTY
     black_dist += game.bar_black * BAR_PENALTY
-    BARE_OFF_BOOST = 30
+    
     white_dist -= game.borne_off_white * BARE_OFF_BOOST
     black_dist -= game.borne_off_black * BARE_OFF_BOOST
 
-    return white_dist - black_dist
+    if game.current_player == -1:
+        return white_dist - black_dist
+    else:
+        return black_dist - white_dist
 
 def expectiminimax_ab(state, depth, alpha, beta, parent_id, last_move, tree_depth, remaining, ischance):
     """
@@ -256,6 +294,7 @@ def minimax_move(game, delay=0.0):
     executes the best move going from last moves to get better strategy (focus on farthest pips)
     using expectiminimax_ab to look ahead 2 plays.
     """
+    global send_limit
     depth = 2
     startT = time.time()
 
@@ -294,8 +333,11 @@ def minimax_move(game, delay=0.0):
     if best_move:
         game.make_move(*best_move)
 
+
     endT = time.time()
     print("best move:", best_move,
           "score:", best_score,
           "time:", endT - startT)
+    print(send_limit)
+    send_limit = 0
     return game.get_board_state()
