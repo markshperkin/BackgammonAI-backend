@@ -1,4 +1,6 @@
 import copy
+
+import torch
 from game import Backgammon
 
 """
@@ -144,3 +146,25 @@ def generate_pip_successors(state: Backgammon):
         successors.append((copy.deepcopy(state), (start, end)))
         undo_pip_move_inplace(state, rec)
     return successors
+
+def get_board_features(state: Backgammon):
+    
+    x = []
+    for i in range(24):
+        x.append(state.board[i] / 15)
+
+    if state.current_player == 1:
+        bar_white, bar_black = state.borne_off_white, state.borne_off_black
+        off_white, off_black = state.borne_off_white, state.borne_off_black
+    else:
+        bar_black, bar_white = state.borne_off_white, state.borne_off_black
+        off_black, off_white = state.borne_off_white, state.borne_off_black
+    
+    x.append(bar_white)
+    x.append(bar_black)
+    x.append(off_white)
+    x.append(off_black)
+
+    return torch.tensor(x, dtype=torch.float32)
+    
+

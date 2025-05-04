@@ -2,7 +2,7 @@ import time
 import random
 
 def Rplay_ai_move(game, delay=1.0):
-    if game.current_player != -1 or game.game_over:
+    if game.game_over:
         return game.get_board_state()
     
     available_moves = game.get_all_available_moves()

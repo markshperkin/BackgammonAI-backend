@@ -17,6 +17,7 @@ childrenChance = defaultdict(list)
 childrenMIN1 = defaultdict(list)
 childrenMIN2 = defaultdict(list)
 send_limit = 0
+agent = None
 
 
 # function to emit the events to api
@@ -34,7 +35,7 @@ def emit_event(node_id, parent_id, move, score, tree_depth, current_player, rema
     # print("emiting this data:", event)
 
     # collects and sorts the levels of the tree depends on the remaining moves. 
-    # displays 3 chance nodes, 2 lowest score min and for each one more move of min. 
+    # displays 3 chance nodes, 2 lowest score min and for each one more move of min. max 200 nodes per move
     if send_limit < 200:
         if remaining == 4:
             if current_player == -1 and tree_depth < 4:
@@ -177,9 +178,7 @@ def evaluate_board(game):
                 
     for die in game.moves_remaining:
         dice_balance += die
-
-    black_dist += dice_balance
-    white_dist += dice_balance
+        
 
     white_dist += game.bar_white * BAR_PENALTY
     black_dist += game.bar_black * BAR_PENALTY
@@ -188,8 +187,10 @@ def evaluate_board(game):
     black_dist -= game.borne_off_black * BARE_OFF_BOOST
 
     if game.current_player == -1:
+        black_dist += dice_balance / 2
         return white_dist - black_dist
     else:
+        white_dist += dice_balance / 2
         return black_dist - white_dist
 
 def expectiminimax_ab(state, depth, alpha, beta, parent_id, last_move, tree_depth, remaining, ischance):
@@ -208,7 +209,6 @@ def expectiminimax_ab(state, depth, alpha, beta, parent_id, last_move, tree_dept
     # terminal states (base case)
     if depth == 0 or state.game_over:
         score = evaluate_board(state)
-
         total = score
 
     # decision node/s
@@ -220,7 +220,7 @@ def expectiminimax_ab(state, depth, alpha, beta, parent_id, last_move, tree_dept
             if d in state.moves_remaining
         ]
         if not legal:
-            # no pip‑moves available -> treat as probability node
+            # no pip moves available -> treat as probability node
             for roll, prob in get_rolls_and_probs():
                 rec = apply_roll_inplace(state, roll)
                 val = expectiminimax_ab(state, depth - 1, alpha, beta, node_id, roll, tree_depth+1, remaining, ischance=True) # pass in roll because its about probability
@@ -230,7 +230,7 @@ def expectiminimax_ab(state, depth, alpha, beta, parent_id, last_move, tree_dept
         else:
             pip_counts = Counter(state.moves_remaining)
             # MAX node (black) - agent
-            if state.current_player == -1:
+            if state.current_player == agent:
                 value = -float("inf")
                 for pip_value in pip_counts:
                     for start, end, die, _ in state.get_all_available_moves():
@@ -297,8 +297,10 @@ def minimax_move(game, delay=0.0):
     global send_limit
     depth = 2
     startT = time.time()
+    global agent
+    agent = game.current_player
 
-    if game.current_player != -1 or game.game_over:
+    if game.game_over:
         return game.get_board_state()
 
     available = game.get_all_available_moves()

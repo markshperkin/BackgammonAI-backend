@@ -1,15 +1,11 @@
-# main flask app. entry point of the backend. 
 from flask import Flask
 from flask_cors import CORS
 from flask_socketio import SocketIO
 from routes import game_routes
 
-# init flask app
 app = Flask(__name__)
-# CORS(app, resources={r"/*": {"origins": ["https://backgammonai-frontend.onrender.com"]}})
 CORS(app)
 
-# socketio = SocketIO(app, cors_allowed_origins="https://backgammonai-frontend.onrender.com")
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 app.register_blueprint(game_routes)

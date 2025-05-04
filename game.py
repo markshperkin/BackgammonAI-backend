@@ -12,6 +12,7 @@ class Backgammon:
         self.borne_off_white = 0
         self.borne_off_black = 0
         self.ai_move_fn = None # current AI agent playing
+        self.mode = None # if user vs ai or ai vs ai
 
 
     def initialize_board(self):
@@ -139,7 +140,7 @@ class Backgammon:
             self.moves_remaining.remove(d)
         
         elif move_type == "bear_off":
-            # bearing off: remove checker from board and increment borne-off counter.
+            # bearing off: remove checker from board and increment borne off counter.
             if self.current_player == 1:
                 self.board[start] -= 1
                 self.borne_off_white += 1
