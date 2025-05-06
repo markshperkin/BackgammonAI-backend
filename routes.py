@@ -1,12 +1,13 @@
 from functools import partial
 import random
-from flask import Blueprint, request, jsonify, Response, Flask
-from flask_cors import cross_origin
+from flask import Blueprint, request, jsonify, Response
 from game import Backgammon
 import json
 from random_ai import Rplay_ai_move
+from furthest_first import FFA_ai_move
+from closest_first import CFA_ai_move
 from minimax import minimax_move, event_queue
-from TD0 import TD0_move
+from TD import TD0_move
 
 game_routes = Blueprint("game_routes", __name__)
 game = Backgammon()
@@ -20,6 +21,14 @@ def lookup_ai(ai_type: str):
     if ai_type == "random":
         print("---- starting random agent ----")
         return Rplay_ai_move
+    
+    elif ai_type == "FFA":
+        print("---- starting FFA agent ----")
+        return FFA_ai_move
+    
+    elif ai_type == "CFA":
+        print("---- starting CFA agent ----")
+        return CFA_ai_move
 
     elif ai_type == "minimax":
         print("---- starting minimax agent ----")

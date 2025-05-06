@@ -36,7 +36,7 @@ def td_update(model, traces, x_t, x_tp1, alpha=0.001, gamma=0.99, lambd=0.0):
 
     # forward pass
     y_t = model(x_t)
-    if x_tp1.shape[-1] == 4:   
+    if x_tp1.shape[-1] == 4:  
         y_tp1 = x_tp1
     else:
         y_tp1 = model(x_tp1)
@@ -58,3 +58,32 @@ def td_update(model, traces, x_t, x_tp1, alpha=0.001, gamma=0.99, lambd=0.0):
             # apply weight update
             p += alpha * traces[p]
     return error
+
+def mc_update(model, episode, alpha=0.001, gamma=0.99):
+
+
+    # build the list of full returns G_t for each time step
+    returns = []
+    G = torch.zeros_like(episode[0][1])
+    for x_t, r_vec in reversed(episode):
+        G = r_vec + gamma * G
+        returns.insert(0, G.clone())
+
+    # MC update:
+    total_error = 0.0
+    for (x_t, _), G_t in zip(episode, returns):
+        y_t = model(x_t)
+        delta = (G_t - y_t).detach()
+        total_error += delta.norm().item()
+
+        # backprop
+        model.zero_grad()
+        y_t.backward(-delta)
+
+        # gradient step
+        with torch.no_grad():
+            for p in model.parameters():
+                p += alpha * p.grad
+
+    avg_error = total_error / len(episode)
+    return avg_error
