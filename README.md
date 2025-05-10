@@ -18,7 +18,8 @@ pip install -r requirements.txt
 python app.py
 ```
 
+
 ## Contributors
-This project was made as part of the Deep Reinforcement Learning class at the University of South Carolina under the supervision of Professor [Forest Agostinelli](https://cse.sc.edu/~foresta/).
+This project was made as part of the [Deep Reinforcement Learning class](https://cse.sc.edu/class/775) at the University of South Carolina under the supervision of Professor [Forest Agostinelli](https://cse.sc.edu/~foresta/).
 
 
