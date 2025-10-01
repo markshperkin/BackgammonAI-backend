@@ -3,7 +3,8 @@
 Welcome to the Backgammon AI back-end repository! This repository features the back-end build of backgammon, including the game logic, AI algorithms, and more. 
 
 ## preview:
-Please check out the demo of this project at [link](https://shesh-besh.com/). Note that I use a free plan, so it may take up to one minute to start working (thanks to render.com).
+Please check out the demo of this project at [link](https://shesh-besh.com/).    
+Note that I use a free plan, so it may take up to one minute to start working (thanks to render.com).
 
 ## how to run:
 **Clone the repository**
