@@ -12,32 +12,32 @@ from TD import TD0_move
 
 
 AGENTS = {
-    # "random":         Rplay_ai_move,
-    # "CFA":            CFA_ai_move,
-    # "FFA":            FFA_ai_move,
+    "random":         Rplay_ai_move,
+    "CFA":            CFA_ai_move,
+    "FFA":            FFA_ai_move,
 
     # "minimax":        minimax_move,
 
     # "TD0v1e_4000":     partial(TD0_move, TD_variant="TD0v1e_4000"),
-    # "TD0v1eW_10000":     partial(TD0_move, TD_variant="TD0v1eW_10000"),
-    "TD0v1eW_35000":     partial(TD0_move, TD_variant="TD0v1eW_35000"),
+    # "TD0v1e_10000":     partial(TD0_move, TD_variant="TD0v1e_10000"),
+    "TD0v1e_35000":     partial(TD0_move, TD_variant="TD0v1e_35000"),
 
     # "TD0v2e_4000":     partial(TD0_move, TD_variant="TD0v2e_4000"),
     # "TD0v2e_10000":     partial(TD0_move, TD_variant="TD0v2e_10000"),
     # "TD0v2e_35000":     partial(TD0_move, TD_variant="TD0v2e_35000"),
 
     # "TDLv1e_4000":     partial(TD0_move, TD_variant="TDLv1e_4000"),
-    # "TDLv1eW_10000":     partial(TD0_move, TD_variant="TDLv1eW_10000"),
-    "TDLv1eW_35000":     partial(TD0_move, TD_variant="TDLv1eW_35000"),
+    # "TDLv1e_10000":     partial(TD0_move, TD_variant="TDLv1e_10000"),
+    "TDLv1e_35000":     partial(TD0_move, TD_variant="TDLv1e_35000"),
 
     # "MCV1e_4000":     partial(TD0_move, TD_variant="MCV1e_4000"),
-    # "MCV1eW_10000":     partial(TD0_move, TD_variant="MCV1eW_10000"),
-    "MCV1eW_35000":     partial(TD0_move, TD_variant="MCV1eW_35000"),
+    # "MCV1e_10000":     partial(TD0_move, TD_variant="MCV1e_10000"),
+    "MCV1e_35000":     partial(TD0_move, TD_variant="MCV1e_35000"),
 
 }
 
 NUM_GAMES   = 1000
-OUTPUT_FILE = "overAll.csv"
+OUTPUT_FILE = "All.csv"
 
 
 def play_match(fn_black, fn_white):

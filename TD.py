@@ -7,55 +7,55 @@ from gameForAI import get_board_features, generate_pip_successors
 
 
 
-def TD0_move(game, delay: float = 1.0, TD_variant = 'TDv1_4000'):
+def TD0_move(game, delay: float = 3.0, TD_variant = 'TDv1_4000'):
     # load correct achitecture for the model TODO make cleaner
     if TD_variant == 'TD0v1e_4000':
         model = TDGammonNetV1()
-        model.load_state_dict(torch.load("TD0v1e_4000.pt", map_location=torch.device('cpu')))
+        model.load_state_dict(torch.load("/models/TD0v1e_4000.pt", map_location=torch.device('cpu')))
         model.eval()
     elif TD_variant == 'TD0v1e_10000':
         model = TDGammonNetV1()
-        model.load_state_dict(torch.load("TD0v1e_10000.pt", map_location=torch.device('cpu')))
+        model.load_state_dict(torch.load("/models/TD0v1e_10000.pt", map_location=torch.device('cpu')))
         model.eval()
     elif TD_variant == 'TD0v1e_35000':
         model = TDGammonNetV1()
-        model.load_state_dict(torch.load("TD0v1e_35000.pt", map_location=torch.device('cpu')))
+        model.load_state_dict(torch.load("/models/TD0v1e_35000.pt", map_location=torch.device('cpu')))
         model.eval()
     elif TD_variant == 'TD0v2e_4000':
         model = TDGammonNetV2()
-        model.load_state_dict(torch.load("TD0v2e_4000.pt", map_location=torch.device('cpu')))
+        model.load_state_dict(torch.load("/models/TD0v2e_4000.pt", map_location=torch.device('cpu')))
         model.eval()
     elif TD_variant == 'TD0v2e_10000':
         model = TDGammonNetV2()
-        model.load_state_dict(torch.load("TD0v2e_10000.pt", map_location=torch.device('cpu')))
+        model.load_state_dict(torch.load("/models/TD0v2e_10000.pt", map_location=torch.device('cpu')))
         model.eval()
     elif TD_variant == 'TD0v2e_35000':
         model = TDGammonNetV2()
-        model.load_state_dict(torch.load("TD0v2e_35000.pt", map_location=torch.device('cpu')))
+        model.load_state_dict(torch.load("/models/TD0v2e_35000.pt", map_location=torch.device('cpu')))
         model.eval()
     elif TD_variant == 'MCV1e_4000':
         model = TDGammonNetV1()
-        model.load_state_dict(torch.load("MCV1e_4000.pt", map_location=torch.device('cpu')))
+        model.load_state_dict(torch.load("/models/MCV1e_4000.pt", map_location=torch.device('cpu')))
         model.eval()
     elif TD_variant == 'MCV1e_10000':
         model = TDGammonNetV1()
-        model.load_state_dict(torch.load("MCV1e_10000.pt", map_location=torch.device('cpu')))
+        model.load_state_dict(torch.load("/models/MCV1e_10000.pt", map_location=torch.device('cpu')))
         model.eval()
     elif TD_variant == 'MCV1e_35000':
         model = TDGammonNetV1()
-        model.load_state_dict(torch.load("MCV1e_35000.pt", map_location=torch.device('cpu')))
+        model.load_state_dict(torch.load("/models/MCV1e_35000.pt", map_location=torch.device('cpu')))
         model.eval()
     elif TD_variant == 'TDLv1e_4000':
         model = TDGammonNetV1()
-        model.load_state_dict(torch.load("TDLv1e_4000.pt", map_location=torch.device('cpu')))
+        model.load_state_dict(torch.load("/models/TDLv1e_4000.pt", map_location=torch.device('cpu')))
         model.eval()
     elif TD_variant == 'TDLv1e_10000':
         model = TDGammonNetV1()
-        model.load_state_dict(torch.load("TDLv1e_10000.pt", map_location=torch.device('cpu')))
+        model.load_state_dict(torch.load("/models/TDLv1e_10000.pt", map_location=torch.device('cpu')))
         model.eval()
     elif TD_variant == 'TDLv1e_35000':
         model = TDGammonNetV1()
-        model.load_state_dict(torch.load("TDLv1e_35000.pt", map_location=torch.device('cpu')))
+        model.load_state_dict(torch.load("/models/TDLv1e_35000.pt", map_location=torch.device('cpu')))
         model.eval()
     
     else:

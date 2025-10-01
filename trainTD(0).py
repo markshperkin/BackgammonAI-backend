@@ -5,11 +5,11 @@ from TDGammonNet import TDGammonNetV1, TDGammonNetV2, td_update
 from game import Backgammon
 from gameForAI import get_board_features, generate_pip_successors
 
-def train_td0(num_episodes: int = 10000):
+def train_td0(num_episodes: int = 1500000):
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     device = torch.device("cpu")
     print(device)
-    modelName = "TD0v1eW_10000.pt"
+    modelName = "TDLv1e_1500000.pt"
     print("Training started for: ", modelName, num_episodes)
     model = TDGammonNetV1().to(device)
     traces = { p: torch.zeros_like(p, device=device) for p in model.parameters() }
@@ -49,7 +49,7 @@ def train_td0(num_episodes: int = 10000):
             if best_move is None:
                 temp = game.get_board_state()
                 x_tp1 = get_board_features(game).to(device)
-                loss = td_update(model, traces, x_t, x_tp1, alpha=alpha, lambd=0.0)
+                loss = td_update(model, traces, x_t, x_tp1, alpha=alpha, lambd=0.8)
                 losses.append(loss)
                 continue
 
@@ -57,7 +57,7 @@ def train_td0(num_episodes: int = 10000):
             game.make_move(start, end)
 
             x_tp1 = get_board_features(game).to(device)
-            loss = td_update(model, traces, x_t, x_tp1, alpha=alpha, lambd=0.0)
+            loss = td_update(model, traces, x_t, x_tp1, alpha=alpha, lambd=0.8)
             losses.append(loss)
 
         winner = game.check_game_over()
@@ -74,7 +74,7 @@ def train_td0(num_episodes: int = 10000):
                 z = torch.tensor([0, 0, 1, 0], dtype=torch.float32).to(device)
 
         x_T = get_board_features(game).to(device)
-        loss = td_update(model, traces, x_T, z, alpha=alpha, gamma=1.0, lambd=0.0)
+        loss = td_update(model, traces, x_T, z, alpha=alpha, gamma=1.0, lambd=0.8)
         losses.append(loss)
         if ep % 100 == 0:
             avg_loss = sum(losses[-100:]) / 100
