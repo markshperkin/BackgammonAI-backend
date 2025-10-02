@@ -4,7 +4,7 @@ Welcome to the Backgammon AI back-end repository! This repository features the b
 
 ## preview:
 Please check out the demo of this project at [link](https://shesh-besh.com/).    
-Note that I use a free plan, so it may take up to one minute to start working (thanks to render.com).
+Please note that I am using a free plan, so it may take up to one minute for the process to start (thanks to render.com).
 
 ## how to run:
 **Clone the repository**
